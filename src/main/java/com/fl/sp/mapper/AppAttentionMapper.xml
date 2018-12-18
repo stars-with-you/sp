@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppAttentionMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.AppAttention" >
+    <id column="gzid" property="gzid" jdbcType="VARCHAR" />
+    <result column="pguid" property="pguid" jdbcType="VARCHAR" />
+    <result column="displayname" property="displayname" jdbcType="NVARCHAR" />
+    <result column="lguid" property="lguid" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="NVARCHAR" />
+    <result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    gzid, pguid, displayname, lguid, title, addtime
+  </sql>
+  <insert id="insert" parameterType="com.fl.sp.model.AppAttention" >
+    insert into app_attention (gzid, pguid, displayname, 
+      lguid, title, addtime
+      )
+    values (#{gzid,jdbcType=VARCHAR}, #{pguid,jdbcType=VARCHAR}, #{displayname,jdbcType=NVARCHAR}, 
+      #{lguid,jdbcType=VARCHAR}, #{title,jdbcType=NVARCHAR}, #{addtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <delete id="delete" >
+    delete from app_attention where pguid=#{pguid,jdbcType=VARCHAR} and lguid=#{lguid,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectSingle" resultMap="BaseResultMap">
+    select * from app_attention where pguid=#{pguid,jdbcType=VARCHAR} and lguid=#{lguid,jdbcType=VARCHAR}
+  </select>
+</mapper>

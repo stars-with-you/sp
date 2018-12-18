@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppNewsinfoMapper">
+	<resultMap id="BaseResultMap" type="com.fl.sp.model.AppNewsinfo">
+		<id column="NID" property="nid" jdbcType="VARCHAR" />
+		<result column="TITLE" property="title" jdbcType="VARCHAR" />
+		<result column="CATA" property="cata" jdbcType="CHAR" />
+		<result column="MENUCODE" property="menucode" jdbcType="VARCHAR" />
+		<result column="ADDTIME" property="addtime" jdbcType="TIMESTAMP" />
+		<result column="ADDLOGINNAME" property="addloginname" jdbcType="VARCHAR" />
+		<result column="ADDDISPNAME" property="adddispname" jdbcType="VARCHAR" />
+		<result column="IP" property="ip" jdbcType="VARCHAR" />
+		<result column="ISOUT" property="isout" jdbcType="CHAR" />
+		<result column="ISTOP" property="istop" jdbcType="CHAR" />
+		<result column="ISWB" property="iswb" jdbcType="CHAR" />
+		<result column="ISWX" property="iswx" jdbcType="CHAR" />
+		<result column="ISQQ" property="isqq" jdbcType="CHAR" />
+		<result column="ISAPP" property="isapp" jdbcType="CHAR" />
+		<result column="ISDEL" property="isdel" jdbcType="CHAR" />
+		<result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.fl.sp.model.AppNewsinfo"
+		extends="BaseResultMap">
+		<result column="CONTENT" property="content" jdbcType="CLOB" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		NID, TITLE, CATA, MENUCODE, ADDTIME, ADDLOGINNAME, ADDDISPNAME, IP, ISOUT,
+		ISTOP,
+		ISWB, ISWX, ISQQ, ISAPP,ISDEL,UPDATETIME
+	</sql>
+	<sql id="Blob_Column_List">
+		CONTENT
+	</sql>
+	<select id="selectList" parameterType="com.fl.sp.model.AppNewsinfo"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from app_newsinfo where isdel &lt;&gt;'1'
+			<if test="title !=null and title !=''">
+				and title like '%'+#{title,jdbcType=VARCHAR}+'%'
+			</if>
+			<if test="menucode !=null and menucode !=''">
+				and menucode =#{menucode,jdbcType=VARCHAR}
+			</if>
+		order by updatetime desc
+	</select>
+	<select id="selectSingle" parameterType="java.lang.String"
+		resultMap="ResultMapWithBLOBs">
+		select * from app_newsinfo where isdel &lt;&gt;'1' and NID = #{nid,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update app_newsinfo set isdel='1'
+		where NID = #{nid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.fl.sp.model.AppNewsinfo">
+		insert into app_newsinfo (NID, TITLE, CATA,
+		MENUCODE, ADDTIME, ADDLOGINNAME,
+		ADDDISPNAME, IP, ISOUT,
+		ISTOP, ISWB, ISWX, ISQQ,
+		ISAPP, CONTENT,ISDEL,UPDATETIME)
+		values (#{nid,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+		#{cata,jdbcType=CHAR},
+		#{menucode,jdbcType=VARCHAR}, #{addtime,jdbcType=TIMESTAMP}, #{addloginname,jdbcType=VARCHAR},
+		#{adddispname,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR},
+		#{isout,jdbcType=CHAR},
+		#{istop,jdbcType=CHAR}, #{iswb,jdbcType=CHAR}, #{iswx,jdbcType=CHAR}, #{isqq,jdbcType=CHAR},
+		#{isapp,jdbcType=CHAR}, #{content,jdbcType=CLOB}, #{isdel,jdbcType=CHAR},#{updatetime,jdbcType=TIMESTAMP})
+	</insert>
+	<update id="update" parameterType="com.fl.sp.model.AppNewsinfo">
+		update app_newsinfo
+	  <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="cata != null" >
+        CATA = #{cata,jdbcType=CHAR},
+      </if>
+      <if test="menucode != null" >
+        MENUCODE = #{menucode,jdbcType=VARCHAR},
+      </if>
+      <if test="addtime != null" >
+        ADDTIME = #{addtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addloginname != null" >
+        ADDLOGINNAME = #{addloginname,jdbcType=VARCHAR},
+      </if>
+      <if test="adddispname != null" >
+        ADDDISPNAME = #{adddispname,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="isout != null" >
+        ISOUT = #{isout,jdbcType=CHAR},
+      </if>
+      <if test="istop != null" >
+        ISTOP = #{istop,jdbcType=CHAR},
+      </if>
+      <if test="iswb != null" >
+        ISWB = #{iswb,jdbcType=CHAR},
+      </if>
+      <if test="iswx != null" >
+        ISWX = #{iswx,jdbcType=CHAR},
+      </if>
+      <if test="isqq != null" >
+        ISQQ = #{isqq,jdbcType=CHAR},
+      </if>
+      <if test="isapp != null" >
+        ISAPP = #{isapp,jdbcType=CHAR},
+      </if>
+      <if test="isdel != null" >
+        ISDEL = #{isdel,jdbcType=CHAR},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+    </set>
+    where NID = #{nid,jdbcType=VARCHAR}
+  </update>
+</mapper>

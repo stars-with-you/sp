@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppBqMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.AppBq">
+        <result column="bguid" property="bguid" jdbcType="VARCHAR"/>
+        <result column="bq" property="bq" jdbcType="NVARCHAR"/>
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    bguid, bq, lguid
+  </sql>
+    <select id="selectSingle" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from app_bq where bguid=#{bguid,jdbcType=VARCHAR}
+    </select>
+    <select id="select" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppBq">
+        select * from app_bq where 1=1
+        <if test="bq != null  and bq != ''">
+            and bq like '%'+ #{bq,jdbcType=VARCHAR}+'%'
+        </if>
+    </select>
+    <select id="selectByBq" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select * from app_bq where bq=#{bq,jdbcType=VARCHAR}
+    </select>
+    <insert id="insert" parameterType="com.fl.sp.model.AppBq">
+    insert into app_bq (bguid, bq, lguid
+      )
+    values (#{bguid,jdbcType=VARCHAR}, #{bq,jdbcType=NVARCHAR}, #{lguid,jdbcType=VARCHAR}
+      )
+  </insert>
+    <delete id="deleteByBguid" parameterType="java.lang.String">
+        delete from app_bq where bguid=#{bguid,jdbcType=VARCHAR}
+    </delete>
+    <update id="update" parameterType="com.fl.sp.model.AppBq">
+        update app_bq
+        <set>
+            <if test="bq != null and bq!=''">
+                bq = #{bq,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where bguid=#{bguid,jdbcType=VARCHAR}
+    </update>
+</mapper>

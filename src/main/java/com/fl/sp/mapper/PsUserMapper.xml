@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.PsUserMapper">
+	<resultMap id="BaseResultMap" type="com.fl.sp.model.PsUser">
+		<result column="loginname" property="loginname" jdbcType="VARCHAR" />
+		<result column="loginpwd" property="loginpwd" jdbcType="VARCHAR" />
+		<result column="displayname" property="displayname" jdbcType="VARCHAR" />
+		<result column="cata" property="cata" jdbcType="CHAR" />
+		<result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="sfz" property="sfz" jdbcType="VARCHAR" />
+		<result column="openid" property="openid" jdbcType="VARCHAR" />
+		<result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+		<result column="pguid" property="pguid" jdbcType="VARCHAR" />
+		<result column="company" property="company" jdbcType="VARCHAR" />
+		<result column="auth" property="auth" jdbcType="VARCHAR" />
+	</resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.fl.sp.model.PsUser" extends="BaseResultMap" >
+        <result column="logo" property="logo" jdbcType="LONGVARCHAR" />
+    </resultMap>
+	<select id="login" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from ps_user where loginname = #{loginname,jdbcType=VARCHAR} and loginpwd= #{loginpwd,jdbcType=VARCHAR}
+	</select>
+	<!--根据手机号获取用户一条信息-->
+	<select id="getSingleByLoginname" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from ps_user where loginname = #{loginname,jdbcType=VARCHAR}
+	</select>
+	<!--根据不变标准获取用户一条信息-->
+	<select id="getSingleByPguid" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from ps_user where pguid = #{pguid,jdbcType=VARCHAR}
+	</select>
+	<select id="getSingleByOpenid" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from ps_user where openid = #{openid,jdbcType=VARCHAR}
+	</select>
+	<select id="getValidate" resultMap="BaseResultMap">
+		select * from ps_user where  loginname = #{loginname,jdbcType=VARCHAR} and pguid != #{pguid,jdbcType=VARCHAR}
+	</select>
+	<select id="selectOrLoginname" resultMap="BaseResultMap"
+		parameterType="com.fl.sp.model.PsUser">
+		select t.* from ps_user t
+		<where>
+			<if test="loginname != null and loginname != '' ">
+				t.loginname  like '%'+#{loginname,jdbcType=VARCHAR}+'%'
+			</if>
+		</where>
+		order by t.cata,t.addtime desc
+	</select>
+	<insert id="insert" parameterType="com.fl.sp.model.PsUser">
+		insert into
+		ps_user (loginname, loginpwd, displayname,
+      cata, addtime, email,
+      sfz, openid, updatetime,
+      pguid,logo,company,auth)
+    values (#{loginname,jdbcType=VARCHAR}, #{loginpwd,jdbcType=VARCHAR}, #{displayname,jdbcType=VARCHAR},
+      #{cata,jdbcType=CHAR}, #{addtime,jdbcType=TIMESTAMP}, #{email,jdbcType=VARCHAR},
+      #{sfz,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP},
+      #{pguid,jdbcType=VARCHAR},
+      #{logo,jdbcType=LONGVARCHAR},
+      #{company,jdbcType=LONGVARCHAR},
+      #{auth,jdbcType=LONGVARCHAR})
+	</insert>
+	<update id="updateByPguid" parameterType="com.fl.sp.model.PsUser">
+		update ps_user
+		<set >
+			<if test="loginname != null" >
+				loginname = #{loginname,jdbcType=VARCHAR},
+			</if>
+			<if test="loginpwd != null " >
+				loginpwd = #{loginpwd,jdbcType=VARCHAR},
+			</if>
+			<if test="displayname != null " >
+				displayname = #{displayname,jdbcType=VARCHAR},
+			</if>
+			<if test="cata != null " >
+				cata = #{cata,jdbcType=CHAR},
+			</if>
+			<if test="addtime != null " >
+				addtime = #{addtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="email !=null " >
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="sfz != null " >
+				sfz = #{sfz,jdbcType=VARCHAR},
+			</if>
+			<if test="openid != null " >
+				openid = #{openid,jdbcType=VARCHAR},
+			</if>
+			<if test="updatetime !=null " >
+				updatetime = #{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="logo != null " >
+				logo = #{logo,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="company != null " >
+				company = #{company,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="auth != null " >
+				auth = #{auth,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where pguid = #{pguid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateOpenid" >
+		update ps_user set openid = #{openid,jdbcType=VARCHAR} where loginname = #{loginname,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteByPguid" parameterType="java.lang.String">
+		delete from ps_user where pguid = #{pguid,jdbcType=VARCHAR}
+	</delete>
+</mapper>

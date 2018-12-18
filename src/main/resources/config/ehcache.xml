@@ -1,0 +1,41 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+   xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+    <!--diskStore：缓存数据持久化的目录 地址  -->
+    <diskStore path="java.io.tmpdir" />
+    <defaultCache
+        maxElementsInMemory="1000"
+        maxElementsOnDisk="10000000"
+        eternal="false"
+        overflowToDisk="true"
+        diskPersistent="false"
+        timeToIdleSeconds="0"
+        timeToLiveSeconds="7200"
+        diskExpiryThreadIntervalSeconds="180"
+        memoryStoreEvictionPolicy="LRU">
+    </defaultCache>
+    <!--access_token缓存2个小时-->
+    <cache  name="wxcache"
+            maxElementsInMemory="1000"
+            maxElementsOnDisk="10000000"
+            eternal="false"
+            overflowToDisk="true"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="7200"
+            diskExpiryThreadIntervalSeconds="180"
+            memoryStoreEvictionPolicy="LRU">
+    </cache>
+</ehcache>
+<!--maxElementsInMemory 缓存最大数目 --> 
+<!--maxElementsOnDisk 硬盘最大缓存个数 -->
+<!--eternal 对象是否永久有效，一但设置了，timeout将不起作用。 -->
+<!--overflowToDisk 是否保存到磁盘，当系统宕机时(true:这确保当你溢出进程内存时，会话不丢失且能够被序列化到磁盘上) -->
+<!--diskPersistent="false"  磁盘缓存在VM重新启动时是否保持(默认为false)-->
+<!-- timeToIdleSeconds缓存自创建日期起至失效时的     间隔时间 120秒-->
+<!-- timeToLiveSeconds缓存创建以后，最后一次访问缓存的日期至失效之时的   存活时间 120 -->
+<!-- LRU  最近最少使用。当我们把一个元素储存到Cache中或者从Cache中取出时都会更新该元素的最后使用时间。当采用最近最少使用原则进行驱除时会优先把最后使用时间最早的元素进行驱除。 -->
+<!-- l  java.io.tmpdir：默认的临时文件存放路径。
+
+l  user.home：用户的主目录。
+
+l  user.dir：用户的当前工作目录，即当前程序所对应的工作路径。 -->

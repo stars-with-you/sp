@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.SAnswerMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.SAnswer">
+        <result column="aid" property="aid" jdbcType="VARCHAR"/>
+        <result column="qid" property="qid" jdbcType="VARCHAR"/>
+        <result column="atext" property="atext" jdbcType="NVARCHAR"/>
+        <result column="avalue" property="avalue" jdbcType="VARCHAR"/>
+        <result column="asort" property="asort" jdbcType="VARCHAR"/>
+        <result column="sid" property="sid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    aid, qid, atext, avalue, asort,sid
+  </sql>
+    <select id="selectBySid" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select * from s_answer where sid = #{sid,jdbcType=VARCHAR} order by cast(asort as int)
+</select>
+    <select id="selectAnswerCt" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select t.aid,t.qid,t.atext,(select COUNT(r.qid) from   s_reply r  where r.atext=t.aid) avalue ,(select COUNT(r.qid) from   s_reply r  where r.qid=t.qid) asort,t.sid from s_answer t where t.sid = #{sid,jdbcType=VARCHAR} order by cast(t.asort as int)
+</select>
+    <insert id="insertList" parameterType="java.util.List">
+        insert into s_answer (aid, qid, atext,avalue, asort,sid) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.aid,jdbcType=VARCHAR},#{item.qid,jdbcType=VARCHAR},#{item.atext,jdbcType=NVARCHAR},#{item.avalue,jdbcType=NVARCHAR},#{item.asort,jdbcType=VARCHAR},#{item.sid,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <delete id="deleteBySid" parameterType="java.lang.String">
+  delete from s_answer where sid = #{sid,jdbcType=VARCHAR}
+</delete>
+</mapper>

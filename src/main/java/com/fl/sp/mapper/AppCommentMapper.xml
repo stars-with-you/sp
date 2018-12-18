@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppCommentMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.AppComment">
+        <result column="cguid" property="cguid" jdbcType="VARCHAR"/>
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="NVARCHAR"/>
+        <result column="openid" property="openid" jdbcType="VARCHAR"/>
+        <result column="ip" property="ip" jdbcType="VARCHAR"/>
+        <result column="ipplace" property="ipplace" jdbcType="NVARCHAR"/>
+        <result column="comment" property="comment" jdbcType="NVARCHAR"/>
+        <result column="status" property="status" jdbcType="CHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="zan" property="zan" jdbcType="INTEGER"/>
+        <result column="hfguid" property="hfguid" jdbcType="VARCHAR"/>
+        <result column="cata" property="cata" jdbcType="INTEGER"/>
+        <result column="shrguid" property="shrguid" jdbcType="VARCHAR"/>
+        <result column="shtime" property="shtime" jdbcType="TIMESTAMP"/>
+        <result column="headurl" property="headurl" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    cguid, lguid, nickname, openid, ip, ipplace, comment, status, createtime, zan, hfguid, 
+    cata, shrguid, shtime,headurl
+  </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppComment">
+        select
+        <include refid="Base_Column_List"/>
+        from app_comment where 1=1
+        <if test="lguid != null  and lguid != ''">
+            and lguid = #{lguid,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null and createtime != ''">
+            and createtime>CONVERT(datetime,#{createtime,jdbcType=TIMESTAMP},101)
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status,jdbcType=CHAR}
+        </if>
+        <if test="comment != null  and comment != ''">
+            and comment like '%'+#{comment,jdbcType=VARCHAR}+'%'
+        </if>
+        order by status desc, zan desc,createtime desc
+    </select>
+    <select id="selectPersonList" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select t.cguid,t.comment,t.lguid,t.createtime,(select top 1 l.defaultpic from app_livelogo l where l.lguid=t.lguid) openid,a.intro ip from app_comment t  left join app_live a on t.lguid=a.lguid where t.openid=#{openid,jdbcType=VARCHAR} order by  t.createtime desc
+    </select>
+    <!--获取评论的回复信息-->
+    <select id="selectHfList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppComment">
+        select
+        <include refid="Base_Column_List"/>
+        from app_comment where hfguid = #{hfguid,jdbcType=VARCHAR} and status='0' order by createtime desc
+    </select>
+    <!--获取直播评论信息-->
+    <select id="selectListQt" resultMap="BaseResultMap">
+        select * from (select row_number()over(order by createtime desc) rownumber,* from
+        (select top (#{endnum,jdbcType=INTEGER}) t.cguid,t.lguid,t.nickname,t.comment,t.createtime,t.zan,t.status
+        ,t.headurl,(SELECT ta.cguid+'^'+ta.nickname+'^'+ta.comment+')(' from app_comment ta where ta.cata=2 and
+        t.cguid=ta.hfguid
+        order by ta.createtime desc FOR XML PATH('')) hfguid
+        from app_comment t where 1=1 and t.cata=1
+        <if test="lguid != null and lguid !=''">
+            and t.lguid = #{lguid,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null and status !=''">
+            and t.status = #{status,jdbcType=VARCHAR}
+        </if>
+        order by t.createtime desc) a) b where rownumber>(#{startnum,jdbcType=INTEGER})
+    </select>
+    <select id="selectSingle" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from app_comment where cguid = #{cguid,jdbcType=VARCHAR}
+    </select>
+    <delete id="DeleteByCguid" parameterType="java.lang.String">
+    delete from app_comment where  cguid = #{cguid,jdbcType=VARCHAR} or hfguid = #{cguid,jdbcType=VARCHAR}
+  </delete>
+    <delete id="DeleteByLguid" parameterType="java.lang.String">
+    delete from app_comment where  lguid = #{lguid,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.fl.sp.model.AppComment">
+    insert into app_comment (cguid, lguid, nickname, 
+      openid, ip, ipplace, 
+      comment, status, createtime, 
+      zan, hfguid, cata, 
+      shrguid, shtime,headurl)
+    values (#{cguid,jdbcType=VARCHAR}, #{lguid,jdbcType=VARCHAR}, #{nickname,jdbcType=NVARCHAR}, 
+      #{openid,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{ipplace,jdbcType=NVARCHAR}, 
+      #{comment,jdbcType=NVARCHAR}, #{status,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{zan,jdbcType=INTEGER}, #{hfguid,jdbcType=VARCHAR}, #{cata,jdbcType=INTEGER}, 
+      #{shrguid,jdbcType=VARCHAR}, #{shtime,jdbcType=TIMESTAMP}, #{headurl,jdbcType=VARCHAR})
+  </insert>
+    <update id="update" parameterType="com.fl.sp.model.AppComment">
+        update app_comment
+        <set>
+            <if test="lguid != null">
+                lguid = #{lguid,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=NVARCHAR},
+            </if>
+            <if test="openid != null">
+                openid = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="ipplace != null">
+                ipplace = #{ipplace,jdbcType=NVARCHAR},
+            </if>
+            <if test="comment != null">
+                comment = #{comment,jdbcType=NVARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=CHAR},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="zan != null">
+                zan = #{zan,jdbcType=INTEGER},
+            </if>
+            <if test="hfguid != null">
+                hfguid = #{hfguid,jdbcType=VARCHAR},
+            </if>
+            <if test="cata != null">
+                cata = #{cata,jdbcType=INTEGER},
+            </if>
+            <if test="shrguid != null">
+                shrguid = #{shrguid,jdbcType=VARCHAR},
+            </if>
+            <if test="shtime != null">
+                shtime = #{shtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="headurl != null">
+                headurl = #{headurl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where cguid = #{cguid,jdbcType=VARCHAR}
+    </update>
+    <update id="updateZan" parameterType="java.lang.String">
+  update app_comment set zan=isnull(zan,0)+1 where  cguid = #{cguid,jdbcType=VARCHAR}
+  </update>
+    <update id="updateStatus">
+         update app_comment set status=#{status,jdbcType=VARCHAR} where  cguid = #{cguid,jdbcType=VARCHAR}
+  </update>
+</mapper>

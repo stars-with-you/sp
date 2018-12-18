@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppMenuMapper">
+	<resultMap id="BaseResultMap" type="com.fl.sp.model.AppMenu">
+		<id column="MID" property="mid" jdbcType="VARCHAR" />
+		<result column="CATA" property="cata" jdbcType="CHAR" />
+		<result column="MENUCODE" property="menucode" jdbcType="VARCHAR" />
+		<result column="MENUNAME" property="menuname" jdbcType="VARCHAR" />
+		<result column="PARENTCODE" property="parentcode" jdbcType="VARCHAR" />
+		<result column="URL" property="url" jdbcType="VARCHAR" />
+		<result column="ICONNAME" property="iconname" jdbcType="VARCHAR" />
+		<result column="SORT" property="sort" jdbcType="INTEGER" />
+		<result column="permission" property="permission" jdbcType="VARCHAR"></result>
+	</resultMap>
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppMenu">
+		SELECT b.* FROM app_menu b where 1=1
+		<if test="mid !=null">
+			and b.mid=#{mid,jdbcType=VARCHAR}
+		</if>
+		<if test="cata !=null">
+			and b.cata=#{cata,jdbcType=VARCHAR}
+		</if>
+		<if test="menucode !=null">
+			and b.menucode=#{menucode,jdbcType=VARCHAR}
+		</if>
+		<if test="menuname !=null">
+			and b.menuname like '%'+#{menuname,jdbcType=VARCHAR}+'%'
+		</if>
+		order by b.sort,b.menucode
+	</select>
+	<select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppMenu">
+		SELECT b.mid,b.cata,b.menucode,
+		CASE cata
+		WHEN '2' THEN (SELECT
+		a.menuname FROM app_menu a WHERE a.cata='1' AND
+		a.menucode=b.parentcode)+'('+b.parentcode+')'
+		ELSE b.parentcode
+		END
+		parentcode ,b.menuname,b.url,b.iconname,b.sort,b.permission
+		FROM app_menu b where 1=1
+		<if test="menucode !=null">
+			and b.menucode=#{menucode,jdbcType=VARCHAR}
+		</if>
+		<if test="menuname !=null">
+			and b.menuname like '%'+#{menuname,jdbcType=VARCHAR}+'%'
+		</if>
+		order by b.menucode,b.sort, b.cata
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		app_menu
+		where mid = #{mid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.fl.sp.model.AppMenu">
+		insert into app_menu (mid,
+		cata, menucode,
+		menuname, parentcode, url,iconname,sort,permission
+		)
+		values
+		(#{mid,jdbcType=VARCHAR}, #{cata,jdbcType=CHAR},
+		<choose>
+        <when test="parentcode !=null and parentcode != ''">
+            (SELECT #{parentcode,jdbcType=VARCHAR}+isnull(right('000'+cast(max(cast(substring(t.menucode,len(t.parentcode)+1,3) as int))+1 as varchar(100)),3) ,'001') menucode
+            FROM app_menu t WHERE t.parentcode=#{parentcode,jdbcType=VARCHAR}),
+        </when>
+        <otherwise>
+            (SELECT RIGHT ('000'+cast(max(cast(t.menucode as int))+1 as varchar(100)),3) FROM app_menu t WHERE t.cata='1'),
+        </otherwise>
+        </choose>
+		#{menuname,jdbcType=VARCHAR},
+		#{parentcode,jdbcType=VARCHAR}, 
+		#{url,jdbcType=VARCHAR},
+		#{iconname,jdbcType=VARCHAR}, 
+		#{sort,jdbcType=INTEGER},
+		#{permission,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="update" parameterType="com.fl.sp.model.AppMenu">
+		update app_menu set
+		cata=#{cata,jdbcType=VARCHAR},
+		menucode=#{menucode,jdbcType=VARCHAR},
+		menuname=#{menuname,jdbcType=VARCHAR},
+		parentcode=#{parentcode,jdbcType=VARCHAR},
+		url=#{url,jdbcType=VARCHAR},
+		iconname=#{iconname,jdbcType=VARCHAR},
+		sort=#{sort,jdbcType=INTEGER},
+		permission=#{permission,jdbcType=VARCHAR}
+		where mid=#{mid,jdbcType=VARCHAR}
+	</update>
+</mapper>

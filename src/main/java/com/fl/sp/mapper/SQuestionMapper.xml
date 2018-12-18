@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.SQuestionMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.SQuestion">
+        <result column="qid" property="qid" jdbcType="VARCHAR"/>
+        <result column="qindex" property="qindex" jdbcType="VARCHAR"/>
+        <result column="qtitle" property="qtitle" jdbcType="NVARCHAR"/>
+        <result column="qcata" property="qcata" jdbcType="CHAR"/>
+        <result column="sid" property="sid" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    qid, qindex, qtitle, qcata, sid
+  </sql>
+    <insert id="insert" parameterType="com.fl.sp.model.SQuestion">
+    insert into s_question (qid, qindex, qtitle, 
+      qcata, sid)
+    values (#{qid,jdbcType=VARCHAR}, #{qindex,jdbcType=VARCHAR}, #{qtitle,jdbcType=NVARCHAR}, 
+      #{qcata,jdbcType=CHAR}, #{sid,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertList" parameterType="java.util.List">
+        insert into s_question (qid, qindex, qtitle,qcata, sid) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.qid,jdbcType=VARCHAR},#{item.qindex,jdbcType=VARCHAR},#{item.qtitle,jdbcType=NVARCHAR},#{item.qcata,jdbcType=CHAR},#{item.sid,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+    <select id="getListBySid" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select t.qid, t.qindex, t.qtitle,t.qcata,(select b.atext+',' FROM s_answer b WHERE t.qid=b.qid order by cast(b.asort as int) FOR XML PATH(''))
+        sid from s_question t where 1=1
+        <if test="sid != null and sid != ''">
+            and t.sid = #{sid,jdbcType=VARCHAR}
+        </if>
+        order by t.qindex
+    </select>
+    <delete id="deleteBySid" parameterType="java.lang.String">
+  delete from s_question where sid = #{sid,jdbcType=VARCHAR}
+</delete>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppLivebqMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.AppLivebq" >
+    <id column="bid" property="bid" jdbcType="VARCHAR" />
+    <result column="dguid" property="dguid" jdbcType="VARCHAR" />
+    <result column="bguid" property="bguid" jdbcType="VARCHAR" />
+    <result column="bq" property="bq" jdbcType="NVARCHAR" />
+    <result column="lguid" property="lguid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bid, dguid,bguid, bq, lguid
+  </sql>
+  <select id="selectByLguid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select distinct bguid,bq from app_livebq where lguid=#{lguid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByLguidyh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select distinct bguid,bq from app_livebq where lguid in(select lguid from app_livedetail where lguid=#{lguid,jdbcType=VARCHAR} and isfb='1')
+  </select>
+  <select id="selectByDguid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from app_livebq where dguid=#{dguid,jdbcType=VARCHAR}
+
+  </select>
+  <insert id="insert" parameterType="com.fl.sp.model.AppLivebq" >
+    insert into app_livebq (bid, dguid,bguid, bq,
+      lguid)
+    values (#{bid,jdbcType=VARCHAR}, #{dguid,jdbcType=VARCHAR}, #{bguid,jdbcType=VARCHAR}, #{bq,jdbcType=NVARCHAR},
+      #{lguid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into app_livebq(bid, dguid,bguid, bq,lguid) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.bid,jdbcType=VARCHAR},#{item.dguid,jdbcType=VARCHAR},#{item.bguid,jdbcType=VARCHAR},#{item.bq,jdbcType=NVARCHAR},#{item.lguid,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <delete id="deleteByDguid" parameterType="java.lang.String">
+    delete from app_livebq where dguid=#{dguid,jdbcType=VARCHAR}
+  </delete>
+  <update id="update" parameterType="com.fl.sp.model.AppLivebq" >
+    update app_livebq
+    <set >
+      <if test="dguid != null" >
+        dguid = #{dguid,jdbcType=VARCHAR},
+      </if>
+      <if test="bguid != null" >
+        bguid = #{bguid,jdbcType=VARCHAR},
+      </if>
+      <if test="bq != null" >
+        bq = #{bq,jdbcType=NVARCHAR},
+      </if>
+      <if test="lguid != null" >
+        lguid = #{lguid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where bid = #{bid,jdbcType=VARCHAR}
+  </update>
+</mapper>

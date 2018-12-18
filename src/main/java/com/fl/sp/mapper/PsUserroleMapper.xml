@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.PsUserroleMapper" >
+
+	<delete id="DelByRid" parameterType="java.lang.String">
+		delete from
+		ps_userrole where pguid=#{pguid,jdbcType=VARCHAR}
+	</delete>
+	<!-- sqlserver 一次性插入多条数据写法 -->
+	<!-- <insert id="AddRolePerm" parameterType="java.util.List"> insert into 
+		PS_ROLEPERMISSION(rcode,pid) values <foreach collection="list.ftl" item="item"
+		index="index" separator=","> (#{item.rcode,jdbcType=VARCHAR},#{item.pid,jdbcType=VARCHAR}) 
+		</foreach> </insert> -->
+		<!-- Oracle 一次性插入多条数据写法 -->
+	<!--<insert id="AddUserRole" parameterType="java.util.List">
+		insert into ps_userrole(pguid,rcode) select a.* from (
+		<foreach collection="list.ftl" item="item" index="index"
+			separator=" union all">
+			select #{item.pguid,jdbcType=VARCHAR},#{item.rcode,jdbcType=VARCHAR} from dual
+		</foreach>
+		) a
+	</insert>-->
+    <insert id="AddUserRole" parameterType="java.util.List">
+        insert into ps_userrole(pguid,rcode) VALUES
+        <foreach collection="list" item="item"
+                 index="index" separator=","> (#{item.pguid,jdbcType=VARCHAR},#{item.rcode,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+</mapper>

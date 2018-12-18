@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.PsShiroMapper">
+	<resultMap id="BaseResultMap" type="com.fl.sp.model.PsShiro">
+		<result column="SGUID" property="sguid" jdbcType="VARCHAR" />
+		<result column="SKEY" property="skey" jdbcType="VARCHAR" />
+		<result column="SVALUE" property="svalue" jdbcType="VARCHAR" />
+		<result column="SADDTIME" property="saddtime" jdbcType="TIMESTAMP" />
+		<result column="SADDER" property="sadder" jdbcType="VARCHAR" />
+		<result column="SUPDATETIME" property="supdatetime" jdbcType="TIMESTAMP" />
+		<result column="SUPDATER" property="supdater" jdbcType="VARCHAR" />
+		<result column="ISDEL" property="isdel" jdbcType="CHAR" />
+		<result column="SSX" jdbcType="DECIMAL" property="ssx" />
+		<result column="SMS" property="sms" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		SGUID, SKEY, SVALUE, SADDTIME, SADDER, SUPDATETIME,
+		SUPDATER, ISDEL, SSX,SMS
+	</sql>
+	<select id="selectAll" resultMap="BaseResultMap" >
+		select * from ps_shiro  where isdel &lt;&gt;'1' order by SSX
+	</select>
+	<select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.PsShiro">
+		select * from ps_shiro where isdel &lt;&gt;'1'
+		<if test="sguid != null and sguid !=''">
+			and sguid = #{sguid,jdbcType=VARCHAR}
+		</if>
+		<if test="skey != null and skey !=''">
+			and SKEY = #{skey,jdbcType=VARCHAR}
+		</if>
+		<if test="svalue != null and svalue!=''">
+			SVALUE = #{svalue,jdbcType=VARCHAR}
+		</if>
+		 order by SSX
+	</select>
+	<insert id="insert" parameterType="com.fl.sp.model.PsShiro">
+		insert into ps_shiro (SGUID,
+		SKEY, SVALUE,
+		SADDTIME, SADDER, SUPDATETIME,
+		SUPDATER, ISDEL, SSX,SMS)
+		values
+		(#{sguid,jdbcType=VARCHAR}, #{skey,jdbcType=VARCHAR},
+		#{svalue,jdbcType=VARCHAR},
+		#{saddtime,jdbcType=TIMESTAMP},
+		#{sadder,jdbcType=VARCHAR}, #{supdatetime,jdbcType=TIMESTAMP},
+		#{supdater,jdbcType=VARCHAR}, #{isdel,jdbcType=CHAR},
+		#{ssx,jdbcType=DECIMAL}, #{sms,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateSelective" parameterType="com.fl.sp.model.PsShiro">
+		update ps_shiro
+		<set>
+			<if test="skey != null and skey != ''">
+				SKEY = #{skey,jdbcType=VARCHAR},
+			</if>
+			<if test="svalue != null and svalue != ''">
+				SVALUE = #{svalue,jdbcType=VARCHAR},
+			</if>
+			<if test="saddtime != null ">
+				SADDTIME = #{saddtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sadder != null and sadder != ''">
+				SADDER = #{sadder,jdbcType=VARCHAR},
+			</if>
+			<if test="supdatetime != null ">
+				SUPDATETIME = #{supdatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="supdater != null and supdater != ''">
+				SUPDATER = #{supdater,jdbcType=VARCHAR},
+			</if>
+			<if test="isdel != null and isdel != ''">
+				ISDEL = #{isdel,jdbcType=CHAR},
+			</if>
+			<if test="ssx != null and ssx != ''">
+				SSX = #{ssx,jdbcType=DECIMAL},
+			</if>
+			<if test="sms != null and sms != ''">
+				SMS = #{sms,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where SGUID = #{sguid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateIsDel" parameterType="com.fl.sp.model.PsShiro">
+		update ps_shiro set ISDEL
+		= #{isdel,jdbcType=CHAR} where SGUID =
+		#{sguid,jdbcType=VARCHAR}
+	</update>
+</mapper>

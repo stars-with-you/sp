@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppLiveMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.AppLive">
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="NVARCHAR"/>
+        <result column="sponsor" property="sponsor" jdbcType="NVARCHAR"/>
+        <result column="startdate" property="startdate" jdbcType="TIMESTAMP"/>
+        <result column="enddate" property="enddate" jdbcType="TIMESTAMP"/>
+        <result column="place" property="place" jdbcType="NVARCHAR"/>
+        <result column="intro" property="intro" jdbcType="NVARCHAR"/>
+        <result column="access" property="access" jdbcType="INTEGER"/>
+        <result column="zan" property="zan" jdbcType="INTEGER"/>
+        <result column="defaultpic" property="defaultpic" jdbcType="VARCHAR"/>
+        <result column="ispublic" property="ispublic" jdbcType="CHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="pguid" property="pguid" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="ewm" property="ewm" jdbcType="VARCHAR"/>
+        <result column="authcount" property="authcount" jdbcType="INTEGER"/>
+        <result column="cata" property="cata" jdbcType="VARCHAR"/>
+        <result column="yxbz" property="yxbz" jdbcType="VARCHAR"/>
+        <result column="zbfs" property="zbfs" jdbcType="VARCHAR"/>
+        <result column="iscomment" property="iscomment" jdbcType="VARCHAR"/>
+        <result column="zbewm" property="zbewm" jdbcType="VARCHAR"/>
+        <result column="ishome" property="ishome" jdbcType="VARCHAR"/>
+        <result column="cbf" property="cbf" jdbcType="NVARCHAR"/>
+        <result column="zcdw" property="zcdw" jdbcType="NVARCHAR"/>
+        <result column="qjurl" property="qjurl" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="swyResultMap" type="com.fl.sp.model.AppLiveSwy">
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="NVARCHAR"/>
+        <result column="access" property="access" jdbcType="INTEGER"/>
+        <result column="zan" property="zan" jdbcType="INTEGER"/>
+        <result column="defaultpic" property="defaultpic" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    lguid, title, sponsor, startdate, enddate, place, intro, access, zan, defaultpic, 
+    ispublic, createtime, updatetime, pguid, url, ewm, authcount,cata,yxbz,zbfs,iscomment,zbewm,ishome,cbf,zcdw,qjurl
+  </sql>
+    <select id="selectSingle" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select lguid, title, sponsor, startdate, enddate, place, intro, access, zan,(select top 1 l.defaultpic from app_livelogo l where l.lguid=t.lguid) defaultpic,ispublic, createtime, updatetime, pguid, url, ewm, authcount,cata,yxbz,zbfs,iscomment,zbewm,ishome,cbf,zcdw,qjurl from app_live t where lguid=#{lguid,jdbcType=VARCHAR}
+  </select>
+    <!--后台直播列表-->
+    <select id="selectList" parameterType="com.fl.sp.model.AppLive" resultMap="BaseResultMap">
+        select t.lguid,t.title,t.sponsor,t.startdate,t.enddate,t.place,t.intro,t.access,t.zan,(select top 1 l.defaultpic
+        from app_livelogo l where l.lguid=t.lguid) defaultpic,t.ispublic,
+        t.createtime,t.updatetime,t.url,t.ewm,t.authcount,t.cata,t.yxbz,t.zbfs,t.iscomment,t.zbewm,t.ishome,t.cbf,t.zcdw,t.qjurl,u.loginname
+        pguid
+        from app_live t left join ps_user u on t.pguid=u.pguid where 1=1
+        <if test="title !=null and title !=''">
+            and t.title like '%'+#{title,jdbcType=VARCHAR}+'%'
+        </if>
+        <if test="cata !=null and cata !=''">
+            and t.cata =#{cata,jdbcType=VARCHAR}
+        </if>
+        <if test="ispublic !=null and ispublic !=''">
+            and t.ispublic =#{ispublic,jdbcType=VARCHAR}
+        </if>
+        <if test="ishome !=null and ishome !=''">
+            and t.ishome =#{ishome,jdbcType=VARCHAR}
+        </if>
+        <if test="pguid !=null and pguid !=''">
+            and t.pguid =u.pguid and u.loginname =#{pguid,jdbcType=VARCHAR}
+        </if>
+        order by t.updatetime desc
+    </select>
+    <!--微信直播列表(我的直播)-->
+    <select id="selectListWX" parameterType="com.fl.sp.model.AppLive" resultMap="BaseResultMap">
+        select t.lguid,t.title,t.sponsor,t.startdate,t.enddate,t.place,t.intro,t.access,t.zan,(select top 1 l.defaultpic
+        from app_livelogo l where l.lguid=t.lguid order by l.addtime ) defaultpic,t.ispublic,
+        t.createtime,t.updatetime,t.url,t.ewm,t.authcount,t.cata,t.yxbz,t.zbfs,t.iscomment,t.zbewm,t.ishome,t.cbf,t.zcdw,t.qjurl,t.pguid
+        from app_live t where 1=1
+        <if test="title !=null and title !=''">
+            and t.title like '%'+#{title,jdbcType=VARCHAR}+'%'
+        </if>
+        <if test="cata !=null and cata !=''">
+            and t.cata =#{cata,jdbcType=VARCHAR}
+        </if>
+        <if test="pguid !=null and pguid !=''">
+            and t.pguid =#{pguid,jdbcType=VARCHAR}
+        </if>
+        order by t.updatetime desc
+    </select>
+    <!--微信直播列表(授权的直播)-->
+    <select id="selectListWXSQ" parameterType="com.fl.sp.model.AppLive" resultMap="BaseResultMap">
+        select t.lguid,t.title,t.sponsor,t.startdate,t.enddate,t.place,t.intro,t.access,t.zan,(select top 1 l.defaultpic
+        from app_livelogo l where l.lguid=t.lguid order by l.addtime ) defaultpic,t.ispublic,
+        t.createtime,t.updatetime,t.url,t.ewm,t.authcount,t.cata,t.yxbz,t.zbfs,t.iscomment,t.zbewm,t.ishome,t.cbf,t.zcdw,t.qjurl,t.pguid
+        from app_live t where 1=1
+        <if test="title !=null and title !=''">
+            and t.title like '%'+#{title,jdbcType=VARCHAR}+'%'
+        </if>
+        <if test="cata !=null and cata !=''">
+            and t.cata =#{cata,jdbcType=VARCHAR}
+        </if>
+        <if test="pguid !=null and pguid !=''">
+            and t.pguid &lt;&gt; #{pguid,jdbcType=VARCHAR} and t.lguid in (select a.lguid from app_auth a where
+            a.pguid=#{pguid,jdbcType=VARCHAR})
+        </if>
+        order by t.updatetime desc
+    </select>
+    <!--我的关注-->
+    <select id="selectListWXGZ" parameterType="com.fl.sp.model.AppLive" resultMap="BaseResultMap">
+        select t.lguid,t.title,t.sponsor,t.startdate,t.enddate,t.place,t.intro,t.access,t.zan,(select top 1 l.defaultpic
+        from app_livelogo l where l.lguid=t.lguid order by l.addtime ) defaultpic,t.ispublic,
+        t.createtime,t.updatetime,t.url,t.ewm,t.authcount,t.cata,t.yxbz,t.zbfs,t.iscomment,t.zbewm,t.ishome,t.cbf,t.zcdw,t.qjurl,t.pguid
+        from app_live t,app_attention a where t.lguid=a.lguid
+        <if test="title !=null and title !=''">
+            and t.title like '%'+#{title,jdbcType=VARCHAR}+'%'
+        </if>
+        <if test="cata !=null and cata !=''">
+            and t.cata =#{cata,jdbcType=VARCHAR}
+        </if>
+        <if test="pguid !=null and pguid !=''">
+            and a.pguid = #{pguid,jdbcType=VARCHAR}
+        </if>
+        order by t.updatetime desc
+    </select>
+    <!--判断发布人是否有权限进行直播-->
+    <select id="selectAuth" resultMap="BaseResultMap">
+    select a.lguid from app_auth a where a.lguid=#{lguid,jdbcType=VARCHAR} and a.pguid=#{pguid,jdbcType=VARCHAR} union all select b.lguid from app_live b where b.lguid=#{lguid,jdbcType=VARCHAR} and b.pguid=#{pguid,jdbcType=VARCHAR}
+  </select>
+    <!--商务云数据接口-->
+    <!--SELECT ta.defaultpic+',' from-->
+    <!--app_livelogo ta where t.lguid=ta.lguid FOR XML PATH('')         'http://zhibo.jsiec.cn'+-->
+    <select id="getswy" resultMap="swyResultMap">
+        select * from (select row_number()over(order by updatetime desc) rownumber,* from (select top
+        (#{endnum,jdbcType=INTEGER}) t.lguid,t.title, t.url,t.access,t.zan,t.updatetime,(ISNULL((select top 1 ta.defaultpic from app_livelogo ta where t.lguid=ta.lguid),'/upload/defaultpic/default.png'))  defaultpic from app_live t where 1=1
+        <if test='istj != null and istj =="1"'>
+            and t.ispublic ='1' and t.ishome='1'
+        </if>
+        order by t.updatetime desc) a) b where rownumber>(#{startnum,jdbcType=INTEGER})
+    </select>
+    <insert id="insert" parameterType="com.fl.sp.model.AppLive">
+    insert into app_live (lguid, title, sponsor, 
+      startdate, enddate, place, 
+      intro, access, zan, 
+      defaultpic, ispublic, createtime, 
+      updatetime, pguid, url, 
+      ewm, authcount,cata,yxbz,zbfs,iscomment,zbewm,ishome,cbf,zcdw,qjurl)
+    values (#{lguid,jdbcType=VARCHAR}, #{title,jdbcType=NVARCHAR}, #{sponsor,jdbcType=NVARCHAR}, 
+      #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, #{place,jdbcType=NVARCHAR}, 
+      #{intro,jdbcType=NVARCHAR}, #{access,jdbcType=INTEGER}, #{zan,jdbcType=INTEGER}, 
+      #{defaultpic,jdbcType=VARCHAR}, #{ispublic,jdbcType=CHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{pguid,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{ewm,jdbcType=VARCHAR}, #{authcount,jdbcType=INTEGER}, #{cata,jdbcType=VARCHAR},
+      #{yxbz,jdbcType=VARCHAR},#{zbfs,jdbcType=VARCHAR},#{iscomment,jdbcType=VARCHAR},#{zbewm,jdbcType=VARCHAR},#{ishome,jdbcType=VARCHAR},#{cbf,jdbcType=NVARCHAR},#{zcdw,jdbcType=NVARCHAR},#{qjurl,jdbcType=VARCHAR})
+  </insert>
+    <update id="update" parameterType="com.fl.sp.model.AppLive">
+        update app_live
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=NVARCHAR},
+            </if>
+            <if test="sponsor != null">
+                sponsor = #{sponsor,jdbcType=NVARCHAR},
+            </if>
+            <if test="startdate != null">
+                startdate = #{startdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="enddate != null">
+                enddate = #{enddate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="place != null">
+                place = #{place,jdbcType=NVARCHAR},
+            </if>
+            <if test="intro != null">
+                intro = #{intro,jdbcType=NVARCHAR},
+            </if>
+            <if test="access != null">
+                access = #{access,jdbcType=INTEGER},
+            </if>
+            <if test="zan != null">
+                zan = #{zan,jdbcType=INTEGER},
+            </if>
+            <if test="defaultpic != null">
+                defaultpic = #{defaultpic,jdbcType=VARCHAR},
+            </if>
+            <if test="ispublic != null">
+                ispublic = #{ispublic,jdbcType=CHAR},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pguid != null">
+                pguid = #{pguid,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="ewm != null">
+                ewm = #{ewm,jdbcType=VARCHAR},
+            </if>
+            <if test="authcount != null">
+                authcount = #{authcount,jdbcType=INTEGER},
+            </if>
+            <if test="cata != null">
+                cata = #{cata,jdbcType=VARCHAR},
+            </if>
+            <if test="yxbz != null">
+                yxbz = #{yxbz,jdbcType=VARCHAR},
+            </if>
+            <if test="zbfs != null">
+                zbfs = #{zbfs,jdbcType=VARCHAR},
+            </if>
+            <if test="iscomment != null">
+                iscomment = #{iscomment,jdbcType=VARCHAR},
+            </if>
+            <if test="zbewm != null">
+                zbewm = #{zbewm,jdbcType=VARCHAR},
+            </if>
+            <if test="ishome != null">
+                ishome = #{ishome,jdbcType=VARCHAR},
+            </if>
+            <if test="cbf != null">
+                cbf = #{cbf,jdbcType=NVARCHAR},
+            </if>
+            <if test="zcdw != null">
+                zcdw = #{zcdw,jdbcType=NVARCHAR},
+            </if>
+            <if test="qjurl != null">
+                qjurl = #{qjurl,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where lguid = #{lguid,jdbcType=VARCHAR}
+    </update>
+    <update id="updateZan" parameterType="com.fl.sp.model.AppLive">
+    update app_live set zan=ISNULL(zan,0)+1 where lguid = #{lguid,jdbcType=VARCHAR}
+  </update>
+    <update id="updateAccess" parameterType="com.fl.sp.model.AppLive">
+    update app_live set access=ISNULL(access,0)+1 where lguid = #{lguid,jdbcType=VARCHAR}
+  </update>
+    <delete id="delete" parameterType="java.lang.String">
+    delete from app_live where lguid=#{lguid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

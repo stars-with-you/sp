@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0056)http://www.jscc.org.cn/swycode/Swy_UserLogin.aspx?flag=0 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="Head1"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>
+
+</title><link href="./selfcode.css" rel="stylesheet" type="text/css">
+    <script src="./jquery-1.9.1.min.js" type="text/javascript"></script>
+       <script type="text/javascript">
+           $(function () {
+               $('#txtUserName').keydown(function () {
+                   $(this).css('color', '#000');
+               });
+
+               $('#txtUserName').focus(function () {
+                   var txtUsername_value = $(this).val();
+                   if (txtUsername_value == "请输入用户名") {
+                       $(this).val('');
+                   }
+               });
+               $('#txtUserName').blur(function () {
+                   var txtUsername_value = $(this).val();
+                   if (txtUsername_value == "") {
+                       $(this).val('请输入用户名');
+                       $(this).css('color', '#9a9a96');
+                   }
+               });
+               var $pswd_obj = $('#pswd');
+               var $txtPass_obj = $('#txtPwd');
+               $pswd_obj.show();
+               $txtPass_obj.hide();
+               $pswd_obj.focus(function () {
+                   $pswd_obj.hide();
+                   $txtPass_obj.show();
+                   $txtPass_obj.focus();
+                   $("#code").css("margin-top", "28px");
+               });
+               $txtPass_obj.blur(function () {
+                   if ($txtPass_obj.val() == '') {
+                       $txtPass_obj.hide();
+                       $pswd_obj.show();
+                   }
+               });
+
+               $("#ImBtnRegister").click(function () {
+                   window.parent.location.href = "Swy_Register.aspx";
+                   return false;
+
+               })
+               $("#forgetpwd").click(function () {
+                   window.parent.location.href = "Swy_ForgetPwdF.aspx";
+                   return false;
+
+               })
+           });
+            </script>
+</head>
+<body>
+    <form method="post" action="http://www.jscc.org.cn/swycode/Swy_UserLogin.aspx?flag=0" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE0Mzc0NDM4NDlkGAEFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYDBQhjaGVja2JveAUHSW1CdG5PawUNSW1CdG5SZWdpc3RlcgZ6iimyhzZho/U0+D7KIjAIG19FCLtdG+Zow3+otV3b">
+</div>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAZxIwpHX8WnxCssJTqNcUtmY3plgk0YBAefRz3MyBlTcDPSlu16Yx4QbiDU+dddK1PosjPvZXLbtlZ5NJP1xzyzQq+gNoB/iaDm11bDyk1IQdjj3B+OTCv3ir0/eHFt2KGywC3N0uOmKM/p0zcD53tdbJL7EuwSC0DbU84URrPzfQ==">
+</div>
+   
+     <!--会员登录一行开始-->
+
+  <div id="hydl">
+  <p>会员登录</p>
+  <div id="dl">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody><tr>
+        <td height="50" colspan="3"><label for="textfield"></label>
+            <input name="txtUserName" type="text" value="请输入用户名" maxlength="40" id="txtUserName" class="m_input">
+       </td>
+      </tr>
+      <tr>
+        <td height="50" colspan="3"><input id="pswd" type="text" class="m_password" value="请输入密码">
+            <input name="txtPwd" type="password" maxlength="40" id="txtPwd" class="m_password" style="display: none;">
+
+        </td>
+      </tr>
+      <tr>
+        <td height="50" colspan="3"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody><tr>
+            <td width="30%" height="50" colspan="2" align="left">
+                <input id="checkbox" type="checkbox" name="checkbox"><label for="checkbox">记住用户名</label>
+          
+              </td>
+        
+            <td width="15%" align="center"><img src="./dl_line.gif" width="5" height="16"></td>
+            <td width="53%"><a style=" cursor:pointer;" id="forgetpwd">忘记密码？</a></td>
+          </tr>
+        </tbody></table></td>
+      </tr>
+      <tr>
+        <td width="41%" height="50">
+            <input type="image" name="ImBtnOk" id="ImBtnOk" src="./button_dl.gif" style="height:42px;width:126px;">
+        
+        
+        </td>
+        <td width="5%">&nbsp;</td>
+        <td width="54%">
+            <input type="image" name="ImBtnRegister" id="ImBtnRegister" src="./button_zc.gif" style="height:42px;width:126px;">
+        </td>
+      </tr>
+    </tbody></table>
+  </div>
+  </div>
+
+  <!--会员登录一行结束-->
+   
+    </form>
+
+
+</body></html>

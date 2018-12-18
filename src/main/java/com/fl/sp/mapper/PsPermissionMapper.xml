@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.PsPermissionMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.PsPermission" >
+    <id column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="pname" property="pname" jdbcType="VARCHAR" />
+    <result column="purl" property="purl" jdbcType="VARCHAR" />
+      <result column="cata" property="cata" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="GetListAll" resultMap="BaseResultMap" >
+    select * from ps_permission order by pname,purl
+  </select>
+  
+  <select id="GetListOrPname" resultMap="BaseResultMap" >
+    select * from ps_permission
+    <if test="pname != null">
+    	where pname like '%'+#{pname,jdbcType=VARCHAR}+'%'
+    </if>
+    order by cata,pname,purl
+  </select>
+  <select id="GetSingle" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select * from ps_permission where pid=#{pid,jdbcType=VARCHAR}
+  </select>
+  <select id="GetListByRcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select t.* from ps_permission t where t.pid in (select b.pid from PS_ROLEPERMISSION b where b.rcode=#{rcode,jdbcType=VARCHAR})
+  </select>
+  <insert id="Add" >
+  	insert into ps_permission(pid,pname,purl,cata) values (#{pid,jdbcType=VARCHAR},#{pname,jdbcType=VARCHAR},#{purl,jdbcType=VARCHAR},#{cata,jdbcType=VARCHAR})
+  </insert>
+  <update id="UpdateByPid" >
+  	update ps_permission set pname=#{pname,jdbcType=VARCHAR},purl=#{purl,jdbcType=VARCHAR},cata=#{cata,jdbcType=VARCHAR} where pid=#{pid,jdbcType=VARCHAR}
+  </update>
+  <delete id="DelByPid" parameterType="java.lang.String">
+  	delete from ps_permission where PID=#{pid,jdbcType=VARCHAR}
+  </delete>
+  
+  <select id="getPermissionsByLoginname" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select p.* from ps_permission p, PS_ROLE r,PS_USER m,PS_ROLEPERMISSION rp ,PS_USERROLE us
+		where m.pguid=#{pguid,jdbcType=VARCHAR} and m.pguid=us.pguid and us.rcode=r.rcode and r.rcode=rp.rcode and rp.pid=p.pid
+	</select>
+</mapper>

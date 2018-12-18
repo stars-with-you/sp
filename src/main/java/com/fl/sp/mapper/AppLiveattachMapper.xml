@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppLiveattachMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.AppLiveattach" >
+    <result column="aguid" property="aguid" jdbcType="VARCHAR" />
+    <result column="dguid" property="dguid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="CHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="zoompath" property="zoompath" jdbcType="VARCHAR" />
+    <result column="filename" property="filename" jdbcType="NVARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="lguid" property="lguid" jdbcType="VARCHAR" />
+  </resultMap> <sql id="Base_Column_List" >
+    aguid, dguid, type, path, zoompath, filename, createtime,lguid
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppLiveattach" >
+    select <include refid="Base_Column_List" />
+    from app_liveattach where 1=1
+    <if test="dguid != null and dguid !=''" >
+      and  dguid = #{dguid,jdbcType=VARCHAR}
+    </if>
+    order by createtime
+  </select>
+  <select id="selectListByLguid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from app_liveattach where   lguid = #{lguid,jdbcType=VARCHAR}   order by createtime
+  </select>
+  <select id="selectSingle" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" />
+    from app_liveattach  where  aguid = #{aguid,jdbcType=VARCHAR}
+  </select>
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from app_liveattach  where  aguid = #{aguid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByDguid" parameterType="java.lang.String" >
+    delete from app_liveattach  where  dguid = #{dguid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByLguid" parameterType="java.lang.String" >
+    delete from app_liveattach  where  lguid = #{lguid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="java.util.List" >
+    insert into app_liveattach (aguid, dguid, type, 
+      path, zoompath, filename, 
+      createtime,lguid)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">
+      SELECT #{item.aguid,jdbcType=VARCHAR}, #{item.dguid,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR},
+      #{item.path,jdbcType=VARCHAR}, #{item.zoompath,jdbcType=VARCHAR}, #{item.filename,jdbcType=NVARCHAR},
+      #{item.createtime,jdbcType=TIMESTAMP}, #{item.lguid,jdbcType=VARCHAR}
+    </foreach>
+  </insert>
+  <update id="update" parameterType="com.fl.sp.model.AppLiveattach" >
+    update app_liveattach
+    <set >
+      <if test="dguid != null" >
+        dguid = #{dguid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="zoompath != null" >
+        zoompath = #{zoompath,jdbcType=VARCHAR},
+      </if>
+      <if test="filename != null" >
+        filename = #{filename,jdbcType=NVARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lguid != null" >
+        dguid = #{lguid,jdbcType=VARCHAR},
+      </if>
+    </set>
+   where  aguid = #{aguid,jdbcType=VARCHAR}
+  </update>
+</mapper>

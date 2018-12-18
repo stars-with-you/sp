@@ -1,0 +1,39 @@
+server:
+  port: 80
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    name: myDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+     # url: jdbc:mysql://localhost:4050/sz?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: fanglei
+      password: 123456
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://localhost:1433;databaseName=fldb
+  freemarker:
+    cache: false
+    suffix:  .ftl
+#不配置会启动会出现，No active profile set, falling back to default profiles: default
+  profiles:
+    active: dev
+  mvc:
+    static-path-pattern: /static/**
+file:
+  uploadFolder: G:/
+mybatis:
+  mapper-locations: classpath:com/fl/sp/mapper/*Mapper.xml
+  type-aliases-package: com.fl.sp.model
+#pagehelper分页插件
+pagehelper:
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+    returnPageInfo: check
+myredis:
+    host: localhost
+    port: 6379
+    password:
+    timeout: 180000
+

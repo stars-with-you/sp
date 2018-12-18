@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppLivedetailMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.AppLivedetail">
+        <result column="dguid" property="dguid" jdbcType="VARCHAR"/>
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="LONGNVARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="pguid" property="pguid" jdbcType="VARCHAR"/>
+        <result column="isfb" property="isfb" jdbcType="CHAR"/>
+        <result column="iszd" property="iszd" jdbcType="CHAR"/>
+        <result column="bq" property="bq" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    dguid, lguid, description, createtime, updatetime, pguid,isfb,iszd,bq
+  </sql>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppLivedetail">
+        select t.dguid, t.lguid, t.description, t.createtime, t.updatetime, u.loginname pguid,t.isfb,t.iszd,t.bq from
+        app_livedetail t left join ps_user u on t.pguid=u.pguid where 1=1
+        <if test="lguid != null and lguid !=''">
+            and t.lguid = #{lguid,jdbcType=VARCHAR}
+        </if>
+        <if test="pguid !=null and pguid !=''">
+            and t.pguid =u.pguid and u.loginname =#{pguid,jdbcType=VARCHAR}
+        </if>
+        <if test="description != null and description !=''">
+            and t.description like '%'+ #{description,jdbcType=VARCHAR}+'%'
+        </if>
+        <if test="isfb !=null and isfb !=''">
+            and t.isfb = #{isfb,jdbcType=CHAR}
+        </if>
+        <if test="bq !=null and bq !=''">
+            and t.bq like '%'+ #{bq,jdbcType=VARCHAR} +'%'
+        </if>
+        order by t.iszd desc,t.updatetime desc
+    </select>
+    <!--selectListFile获取前台已发布详情列表，包含附件-->
+    <select id="selectListFile" resultMap="BaseResultMap">
+        select * from (select row_number()over(order by iszd desc,updatetime desc) rownumber,* from (select top
+        (#{endnum,jdbcType=INTEGER}) t.dguid, t.description,t.updatetime,t.isfb,t.iszd,(SELECT
+        ta.path+','+ta.zoompath+';' from app_liveattach ta where t.dguid=ta.dguid order by ta.createtime FOR XML
+        PATH('')) pguid ,t.bq from app_livedetail t where 1=1
+        <if test="lguid != null and lguid !=''">
+            and t.lguid = #{lguid,jdbcType=VARCHAR}
+        </if>
+        <if test="isfb != null and isfb !=''">
+            and t.isfb = #{isfb,jdbcType=VARCHAR}
+        </if>
+        <if test="bq !=null and bq !=''">
+            and t.dguid in (select bq.dguid from app_livebq bq where bq.bguid=#{bq,jdbcType=VARCHAR} )
+        </if>
+        order by t.iszd desc,t.updatetime desc) a) b where rownumber>(#{startnum,jdbcType=INTEGER})
+    </select>
+
+    <select id="selectSingle" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from app_livedetail where dguid = #{dguid,jdbcType=VARCHAR}
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+    delete from app_livedetail  where dguid = #{dguid,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByLguid" parameterType="java.lang.String">
+    delete from app_livedetail  where lguid = #{lguid,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.fl.sp.model.AppLivedetail">
+    insert into app_livedetail (dguid, lguid, description, 
+      createtime, updatetime, pguid,isfb,iszd,bq
+      )
+    values (#{dguid,jdbcType=VARCHAR}, #{lguid,jdbcType=VARCHAR}, #{description,jdbcType=LONGNVARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{pguid,jdbcType=VARCHAR},#{isfb,jdbcType=CHAR},#{iszd,jdbcType=CHAR}, #{bq,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="update" parameterType="com.fl.sp.model.AppLivedetail">
+        update app_livedetail
+        <set>
+            <if test="lguid != null">
+                lguid = #{lguid,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=LONGNVARCHAR},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pguid != null">
+                pguid = #{pguid,jdbcType=VARCHAR},
+            </if>
+            <if test="isfb !=null">
+                isfb=#{isfb,jdbcType=CHAR},
+            </if>
+            <if test="iszd !=null">
+                iszd=#{iszd,jdbcType=CHAR},
+            </if>
+            <if test="bq != null">
+                bq = #{bq,jdbcType=LONGNVARCHAR},
+            </if>
+        </set>
+        where dguid = #{dguid,jdbcType=VARCHAR}
+    </update>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.SSurveyMapper">
+    <resultMap id="BaseResultMap" type="com.fl.sp.model.SSurvey">
+        <result column="sid" property="sid" jdbcType="VARCHAR"/>
+        <result column="stitle" property="stitle" jdbcType="NVARCHAR"/>
+        <result column="sms" property="sms" jdbcType="NVARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="pguid" property="pguid" jdbcType="VARCHAR"/>
+        <result column="displayname" property="displayname" jdbcType="NVARCHAR"/>
+        <result column="lguid" property="lguid" jdbcType="VARCHAR"/>
+        <result column="isedit" property="isedit" jdbcType="CHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    sid, stitle, sms, createtime, pguid, displayname, lguid,isedit
+  </sql>
+    <select id="getSingle" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from s_survey where sid=#{sid,jdbcType=VARCHAR}
+    order by createtime desc
+  </select>
+    <select id="getList" parameterType="com.fl.sp.model.SSurvey" resultMap="BaseResultMap">
+        select * from s_survey where 1=1
+        <if test="pguid != null and pguid != ''">
+            and pguid = #{pguid,jdbcType=VARCHAR}
+        </if>
+        <if test="stitle != null and stitle != ''">
+            and stitle like '%'+ #{stitle,jdbcType=NVARCHAR}+'%'
+        </if>
+        order by createtime desc
+    </select>
+    <insert id="insert" parameterType="com.fl.sp.model.SSurvey">
+    insert into s_survey (sid, stitle, sms, 
+      createtime, pguid, displayname, 
+      lguid,isedit)
+    values (#{sid,jdbcType=VARCHAR}, #{stitle,jdbcType=NVARCHAR}, #{sms,jdbcType=NVARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{pguid,jdbcType=VARCHAR}, #{displayname,jdbcType=NVARCHAR}, 
+      #{lguid,jdbcType=VARCHAR},#{isedit,jdbcType=CHAR})
+  </insert>
+    <update id="updateBySid" parameterType="com.fl.sp.model.SSurvey">
+        update s_survey
+        <set>
+            <if test="stitle != null and stitle != ''">
+                stitle = #{stitle,jdbcType=NVARCHAR},
+            </if>
+            <if test="sms != null and sms != ''">
+                sms = #{sms,jdbcType=NVARCHAR},
+            </if>
+            <if test="createtime != null ">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pguid != null and pguid != ''">
+                pguid = #{pguid,jdbcType=VARCHAR},
+            </if>
+            <if test="displayname != null and displayname != ''">
+                displayname = #{displayname,jdbcType=NVARCHAR},
+            </if>
+            <if test="lguid != null and lguid != ''">
+                lguid = #{lguid,jdbcType=VARCHAR},
+            </if>
+            <if test="isedit != null and isedit != ''">
+                isedit = #{isedit,jdbcType=CHAR},
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=VARCHAR}
+    </update>
+    <update id="updateisedit" parameterType="java.lang.String">
+        update s_survey set isedit='1'  where sid=#{sid,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteBySid" parameterType="java.lang.String">
+    delete from s_survey where sid=#{sid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

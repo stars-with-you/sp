@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppLivelogoMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.AppLivelogo" >
+    <id column="logoid" property="logoid" jdbcType="VARCHAR" />
+    <result column="cata" property="cata" jdbcType="CHAR" />
+    <result column="oriname" property="oriname" jdbcType="NVARCHAR" />
+    <result column="defaultpic" property="defaultpic" jdbcType="VARCHAR" />
+    <result column="zoompath" property="zoompath" jdbcType="VARCHAR" />
+    <result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
+    <result column="lguid" property="lguid" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    logoid, cata, oriname, defaultpic, zoompath, addtime, lguid
+  </sql>
+  <select id="selectSingle" resultMap="BaseResultMap">
+    select * from app_livelogo where logoid=#{logoid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap">
+    select * from app_livelogo where lguid=#{lguid,jdbcType=VARCHAR} order by addtime
+  </select>
+  <insert id="insert" parameterType="com.fl.sp.model.AppLivelogo" >
+    insert into app_livelogo (logoid, cata, oriname, 
+      defaultpic, zoompath, addtime, 
+      lguid)
+    values (#{logoid,jdbcType=VARCHAR}, #{cata,jdbcType=CHAR}, #{oriname,jdbcType=NVARCHAR}, 
+      #{defaultpic,jdbcType=VARCHAR}, #{zoompath,jdbcType=VARCHAR}, #{addtime,jdbcType=TIMESTAMP}, 
+      #{lguid,jdbcType=VARCHAR})
+  </insert>
+  <delete id="deleteByKey" parameterType="java.lang.String">
+    delete from app_livelogo where logoid=#{logoid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByLguid"  parameterType="java.lang.String">
+    delete from app_livelogo where lguid=#{lguid,jdbcType=VARCHAR}
+  </delete>
+</mapper>

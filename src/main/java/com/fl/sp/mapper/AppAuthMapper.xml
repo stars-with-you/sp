@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.AppAuthMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.AppAuth" >
+    <result column="auguid" property="auguid" jdbcType="VARCHAR" />
+    <result column="lguid" property="lguid" jdbcType="VARCHAR" />
+    <result column="pguid" property="pguid" jdbcType="VARCHAR" />
+    <result column="cata" property="cata" jdbcType="CHAR" />
+    <result column="sqtime" property="sqtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.fl.sp.model.AppComment" >
+    select  t.auguid, t.lguid,(select d.loginname+'('+d.displayname+')' from ps_user d where d.pguid=t.pguid) pguid, t.cata, t.sqtime
+    from app_auth t where 1=1
+    <if test="lguid != null  and lguid != ''" >
+      and  t.lguid = #{lguid,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!--根据主键删除一条授权信息-->
+  <delete id="deleteByAuguid" parameterType="java.lang.String" >
+    delete from app_auth where  auguid = #{auguid,jdbcType=VARCHAR}
+  </delete>
+  <!--插入一条授权信息-->
+  <insert id="insert" parameterType="com.fl.sp.model.AppAuth" >
+    insert into app_auth (auguid, lguid, pguid, 
+      cata, sqtime)
+    values (#{auguid,jdbcType=VARCHAR}, #{lguid,jdbcType=VARCHAR},(select pguid from ps_user where loginname=#{pguid,jdbcType=VARCHAR}),
+      #{cata,jdbcType=CHAR}, #{sqtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertMap" parameterType="java.util.List" >
+    insert into app_auth (auguid, lguid, pguid,
+      cata, sqtime)
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">
+      SELECT #{auguid,jdbcType=VARCHAR}, #{lguid,jdbcType=VARCHAR}, (select pguid from ps_user where loginname=#{pguid,jdbcType=VARCHAR}),
+      #{cata,jdbcType=CHAR}, #{sqtime,jdbcType=TIMESTAMP}
+    </foreach>
+  </insert>
+  <update id="update" parameterType="com.fl.sp.model.AppAuth" >
+    update app_auth
+    <set >
+      <if test="auguid != null" >
+        auguid = #{auguid,jdbcType=VARCHAR},
+      </if>
+      <if test="lguid != null" >
+        lguid = #{lguid,jdbcType=VARCHAR},
+      </if>
+      <if test="pguid != null" >
+        pguid = #{pguid,jdbcType=VARCHAR},
+      </if>
+      <if test="cata != null" >
+        cata = #{cata,jdbcType=CHAR},
+      </if>
+      <if test="sqtime != null" >
+        sqtime = #{sqtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+  </update>
+</mapper>

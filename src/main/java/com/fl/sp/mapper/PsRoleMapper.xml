@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fl.sp.mapper.PsRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.fl.sp.model.PsRole" >
+    <id column="rcode" property="rcode" jdbcType="VARCHAR" />
+    <result column="rname" property="rname" jdbcType="VARCHAR" />
+    <result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="yxbz" property="yxbz" jdbcType="CHAR" />
+  </resultMap>
+   <select id="GetList" resultMap="BaseResultMap" parameterType="com.fl.sp.mapper.PsRoleMapper">
+      select  r.rcode,r.rname,r.addtime,r.updatetime,(
+       SELECT  b.pname+'('+b.purl+');'
+       FROM ps_permission b, ps_rolepermission t WHERE t.pid=b.pid and r.rcode=t.rcode  FOR XML PATH('')
+       ) yxbz from ps_role r
+    <if test="rname != null">
+    	 where r.rname like '%'+#{rname,jdbcType=VARCHAR}+'%'
+    </if>
+       group by  r.rcode,r.rname,r.addtime,r.updatetime
+  </select>
+  <select id="GetListByLoginname" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select t.* from ps_role t where t.rcode in (select b.rcode from PS_USERROLE b where b.pguid=#{pguid,jdbcType=VARCHAR})
+  </select>
+  <select id="GetSingle" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select * from ps_role where rcode=#{rcode,jdbcType=VARCHAR}
+  </select>
+    <!--Oracle:insert into ps_role(rcode,rname,addtime,updatetime,yxbz) values ((SELECT lpad(max(cast(t.rcode as SIGNED))+1,6,'000000') FROM ps_role t),#{rname,jdbcType=VARCHAR},#{addtime,jdbcType=TIMESTAMP},#{updatetime,jdbcType=TIMESTAMP},#{yxbz,jdbcType=VARCHAR})-->
+  <insert id="Add" parameterType="com.fl.sp.model.PsRole">
+  	insert into ps_role(rcode,rname,addtime,updatetime,yxbz) values ((select REPLICATE('0',6-LEN(a.rcode))+cast(a.rcode as varchar) from (SELECT  (max(cast(t.rcode as int))+1) rcode FROM ps_role t) a),#{rname,jdbcType=VARCHAR},#{addtime,jdbcType=TIMESTAMP},#{updatetime,jdbcType=TIMESTAMP},#{yxbz,jdbcType=VARCHAR})
+  </insert>
+  <update id="UpdateByRcode" parameterType="com.fl.sp.model.PsRole">
+  	update ps_role set rname=#{rname,jdbcType=VARCHAR},addtime=#{addtime,jdbcType=TIMESTAMP},
+  	updatetime=#{updatetime,jdbcType=TIMESTAMP},yxbz=#{yxbz,jdbcType=VARCHAR}
+  	 where rcode=#{rcode,jdbcType=VARCHAR}
+  </update>
+  <delete id="DelByRcode" parameterType="java.lang.String">
+  	delete from ps_role where rcode=#{rcode,jdbcType=VARCHAR}
+  </delete>
+</mapper>
