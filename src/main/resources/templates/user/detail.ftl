@@ -12,7 +12,8 @@
                 <div class="layui-form" lay-filter="">
                     <div class="layui-form-item">
                         <label class="layui-form-label">头像</label>
-                        <img src="${Session.user.logo!}" style="width: 79px;height: 79px;margin-left: 15px;">
+                        <img src="${request.contextPath}${Session.user.logo!}"
+                             style="width: 79px;height: 79px;margin-left: 15px;">
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">手机号</label>
@@ -150,7 +151,7 @@
             </tr>
         </table>
     </form>
-    <script src="/static/js/jquery.form.js"></script>
+    <script src="${request.contextPath}/static/js/jquery.form.js"></script>
     <script>
         var layer = null, myindex = 0, form = null;
         layui.use(['layer', 'laydate', 'element', 'form'], function () {
@@ -161,7 +162,7 @@
                 $.ajax({
                     async: false, // 使用同步的方法
                     type: "post",
-                    url: '/user/validate2',
+                    url: '${request.contextPath}/user/validate2',
                     data: { //要提交到服务端验证的用户名
                         "loginname": $("#manager_txtLoginname").val(),
                         "pguid": $("#master_hidpguid").val()
@@ -227,7 +228,7 @@
                 return;
             }
             var pguid = $("#hidpguid").val();
-            $.post("/user/upwd", {
+            $.post("${request.contextPath}/user/upwd", {
                 "pguid": pguid,
                 "loginpwd": $("#master_txtNewpwd").val()
             }, function (data, status) {
@@ -246,7 +247,7 @@
 
         function edit() {
             {
-                $.post("/user/getsingle", {"pguid": $("#hidpguid").val()}, function (data, status) {
+                $.post("${request.contextPath}/user/getsingle", {"pguid": $("#hidpguid").val()}, function (data, status) {
                     if (status == "success") {
                         if (data != "") {
                             var json = $.parseJSON(data);
@@ -259,7 +260,7 @@
                             $("#manager_slcata").val(json.cata);//
                             if (typeof(json.logo) != "undefined" && json.logo != null && json.logo != "") {
                                 $("#imgpicfile").show();
-                                $("#imgpicfile").prop("src", json.logo);
+                                $("#imgpicfile").prop("src", '${request.contextPath}' + json.logo);
                             }
                             $("#managerlist_btnupdate").show();
                         } else {
@@ -283,7 +284,7 @@
             });
             $("#myform").ajaxSubmit({
                 type: "POST",
-                url: "/user/update",
+                url: "${request.contextPath}/user/update",
                 dataType: "text",
                 error: function (jqXHR, textStatus, errorThrown) {
                     layer.msg('网络问题导致添加信息失败', {icon: 2, time: 2000});

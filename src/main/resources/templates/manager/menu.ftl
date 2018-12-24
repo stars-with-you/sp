@@ -89,7 +89,7 @@
         //第一个实例
         tableIns = table.render({
             elem: '#test'
-            , url: '/menu/data',
+            , url: '${request.contextPath}/menu/data',
             request: {
                 pageName: 'currentPage' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
@@ -140,7 +140,7 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     $.ajax({
-                        url: "/menu/delbymid",
+                        url: "${request.contextPath}/menu/delbymid",
                         type: "post",
                         data: {"mid": trdata.mid},
                         dataType: "text",
@@ -152,7 +152,7 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                $.post("/menu/getsingle", {"mid": trdata.mid}, function (data, status) {
+                $.post("${request.contextPath}/menu/getsingle", {"mid": trdata.mid}, function (data, status) {
                     if (status == "success") {
                         if (data != "") {
                             var json = $.parseJSON(data);
@@ -227,7 +227,15 @@
             layer.msg('请填写菜单路径', {icon: 2,time:2000});
             return;
         }
-        $.post("/menu/add",{"cata":$("#menulist_slcata").val(),"menuname":$("#menulist_txtmenuname").val(),"menucode":$("#menulist_txtmenucode").val(),"url":$("#menulist_txturl").val(),"iconname":$("#menulist_txticonname").val(),"sort":$("#menulist_txtsort").val(),"permission":$("#menulist_txtpermission").val()},function(data,status){
+        $.post("${request.contextPath}/menu/add", {
+            "cata": $("#menulist_slcata").val(),
+            "menuname": $("#menulist_txtmenuname").val(),
+            "menucode": $("#menulist_txtmenucode").val(),
+            "url": $("#menulist_txturl").val(),
+            "iconname": $("#menulist_txticonname").val(),
+            "sort": $("#menulist_txtsort").val(),
+            "permission": $("#menulist_txtpermission").val()
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('信息添加成功', {icon: 1,time:2000});
@@ -256,7 +264,16 @@
             layer.msg('请填写菜单代码', {icon: 2,time:2000});
             return;
         }
-        $.post("/menu/updatebymid",{"mid":$("#menulist_hidpid").val(),"cata":$("#menulist_slcata").val(),"menuname":$("#menulist_txtmenuname").val(),"menucode":$("#menulist_txtmenucode").val(),"url":$("#menulist_txturl").val(),"iconname":$("#menulist_txticonname").val(),"sort":$("#menulist_txtsort").val(),"permission":$("#menulist_txtpermission").val()},function(data,status){
+        $.post("${request.contextPath}/menu/updatebymid", {
+            "mid": $("#menulist_hidpid").val(),
+            "cata": $("#menulist_slcata").val(),
+            "menuname": $("#menulist_txtmenuname").val(),
+            "menucode": $("#menulist_txtmenucode").val(),
+            "url": $("#menulist_txturl").val(),
+            "iconname": $("#menulist_txticonname").val(),
+            "sort": $("#menulist_txtsort").val(),
+            "permission": $("#menulist_txtpermission").val()
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('信息修改成功', {icon: 1,time:2000});
@@ -273,7 +290,7 @@
     }
     function getMenu()
     {
-        $.post("/menu/getmenu",{},function(data,status)
+        $.post("${request.contextPath}/menu/getmenu", {}, function (data, status)
         {
             if (status=="success") {
                 var rsarr=$.parseJSON(data);

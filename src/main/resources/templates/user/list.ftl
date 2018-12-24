@@ -151,7 +151,7 @@
             </script>
         </div>
     </div>
-<script src="/static/js/jquery.form.js"></script>
+    <script src="${request.contextPath}/static/js/jquery.form.js"></script>
 <script>
     var tableIns = null, layer = null, myindex = 0, form = null;
     layui.use(['table', 'layer', 'laydate', 'element', 'form'], function () {
@@ -159,7 +159,7 @@
         layer = layui.layer;
         form = layui.form;
         //绑定添加角色按钮事件
-        $.post("/role/getlist", {"pn": "1", "ps": "100"}, function (data, status) {
+        $.post("${request.contextPath}/role/getlist", {"pn": "1", "ps": "100"}, function (data, status) {
             if (status == "success") {
                 if (data != "") {
                     var json = [];
@@ -184,7 +184,7 @@
         //第一个实例
         tableIns = table.render({
             elem: '#test'
-            , url: '/manager/data',
+            , url: '${request.contextPath}/manager/data',
             request: {
                 pageName: 'currentPage' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
@@ -251,7 +251,7 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     $.ajax({
-                        url: "/manager/del",
+                        url: "${request.contextPath}/manager/del",
                         type: "post",
                         data: {"pguid": trdata.pguid},
                         dataType: "text",
@@ -263,7 +263,7 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                $.post("/user/getsingle", {"pguid": trdata.pguid}, function (data, status) {
+                $.post("${request.contextPath}/user/getsingle", {"pguid": trdata.pguid}, function (data, status) {
                     if (status == "success") {
                         if (data != "") {
                             var json = $.parseJSON(data);
@@ -275,7 +275,7 @@
                             $("#manager_txtcompany").val(json.company);//
                             if (typeof(json.logo) != "undefined" && json.logo != null && json.logo != "") {
                                 $("#imgpicfile").show();
-                                $("#imgpicfile").prop("src", json.logo);
+                                $("#imgpicfile").prop("src", '${request.contextPath}' + json.logo);
                             }
                             if (json.auth == "1") {
                                 $(":radio[name='auth'][value='1']").prop("checked", "true");
@@ -323,7 +323,7 @@
             $.ajax({
                 async: false, // 使用同步的方法
                 type: "post",
-                url: '/manager/validate',
+                url: '${request.contextPath}/manager/validate',
                 data: { //要提交到服务端验证的用户名
                     "loginname": $("#manager_txtLoginname").val()
                 },
@@ -344,7 +344,7 @@
             $.ajax({
                 async: false, // 使用同步的方法
                 type: "post",
-                url: '/manager/validate2',
+                url: '${request.contextPath}/manager/validate2',
                 data: { //要提交到服务端验证的用户名
                     "loginname": $("#manager_txtLoginname").val(),
                     "pguid": $("#master_hidpguid").val()
@@ -437,7 +437,7 @@
         });
         $("#myform").ajaxSubmit({
             type: "POST",
-            url: "/manager/add",
+            url: "${request.contextPath}/manager/add",
             dataType: "text",
             data: {"loginpwd": $("#manager_txtLoginpwd").val()},
             error: function (jqXHR, textStatus, errorThrown) {
@@ -466,7 +466,7 @@
         });
         $("#myform").ajaxSubmit({
             type: "POST",
-            url: "/user/update",
+            url: "${request.contextPath}/user/update",
             dataType: "text",
             error: function (jqXHR, textStatus, errorThrown) {
                 layer.msg('网络问题导致添加信息失败', {icon: 2, time: 2000});
@@ -503,7 +503,7 @@
             });
             return;
         }
-        $.post("/user/upwd", {
+        $.post("${request.contextPath}/user/upwd", {
             "pguid": $("#master_hidpguid").val(),
             "loginpwd": $("#master_txtNewpwd").val()
         }, function (data, status) {
@@ -524,7 +524,7 @@
     function managerRole(pguid) {
         $("#master_hidpguid").val(pguid);
         $("#manager_tbrole input[type=checkbox]").removeAttr("checked");
-        $.post("/role/getlistbypguid", {"pguid": pguid}, function (data, status) {
+        $.post("${request.contextPath}/role/getlistbypguid", {"pguid": pguid}, function (data, status) {
             if (status == "success") {
                 if (data != "") {
                     var json = $.parseJSON(data);
@@ -544,7 +544,7 @@
         $("#manager_tbrole input[type=checkbox]:checked").each(function () {
             pid += $(this).attr("id") + ";";
         });
-        $.post("/role/adduserrole", {
+        $.post("${request.contextPath}/role/adduserrole", {
             "pguid": $("#master_hidpguid").val(),
             "rcodestr": pid
         }, function (data, status) {

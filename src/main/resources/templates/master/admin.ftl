@@ -15,9 +15,9 @@
     <meta http-equiv="keywords" content="金茂图文直播,江苏金茂图文,江苏金茂图文直播,江苏金茂图文直播系统">
     <link rel="shortcut icon" href="/static/images/index_PC_01.png">
     <title>金茂图文直播</title>
-    <link rel="stylesheet" href="/static/js/layui/css/layui.css"/>
-    <script src="/static/js/jquery-1.12.4.js"></script>
-    <script src="/static/js/layui/layui.js"></script>
+    <link rel="stylesheet" href="${request.contextPath}/static/js/layui/css/layui.css"/>
+    <script src="${request.contextPath}/static/js/jquery-1.12.4.js"></script>
+    <script src="${request.contextPath}/static/js/layui/layui.js"></script>
     <style>
         .layui-body {
             background-color: #eee;
@@ -101,7 +101,7 @@
     <div class="layui-side">
         <div class="layui-side-scroll">
             <div style="background-color:#393D49;color: #fff;font-weight: 300;font-size: 16px;line-height: 60px;width:200px;text-align: center;">
-                <img src="/static/images/index_PC_01.png" style="width:30px;height: 30px;">&nbsp;&nbsp;&nbsp;金茂图文直播
+                <img src="${request.contextPath}/static/images/index_PC_01.png" style="width:30px;height: 30px;">&nbsp;&nbsp;&nbsp;金茂图文直播
             </div>
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul id="ulcd" class="layui-nav layui-nav-tree">
@@ -119,12 +119,14 @@
                                               <#if itemc.permission!=''>
                                                 <@shiro.hasPermission name="${itemc.permission}">
                                                     <dd>
-                                                        <a style="padding-left:40px;" href="${itemc.url}">${itemc.menuname}</a>
+                                                        <a style="padding-left:40px;"
+                                                           href="${request.contextPath}${itemc.url}">${itemc.menuname}</a>
                                                     </dd>
                                                 </@shiro.hasPermission>
                                               <#else>
                                                 <dd>
-                                                    <a style="padding-left:40px;" href="${itemc.url}">${itemc.menuname}</a>
+                                                    <a style="padding-left:40px;"
+                                                       href="${request.contextPath}${itemc.url}">${itemc.menuname}</a>
                                                 </dd>
                                               </#if>
                                           </#if>
@@ -143,12 +145,14 @@
                                               <#if itemc.permission!=''>
                                                 <@shiro.hasPermission name="${itemc.permission}">
                                                     <dd>
-                                                        <a style="padding-left:40px;" href="${itemc.url}">${itemc.menuname}</a>
+                                                        <a style="padding-left:40px;"
+                                                           href="${request.contextPath}${itemc.url}">${itemc.menuname}</a>
                                                     </dd>
                                                 </@shiro.hasPermission>
                                               <#else>
                                                 <dd>
-                                                    <a style="padding-left:40px;" href="${itemc.url}">${itemc.menuname}</a>
+                                                    <a style="padding-left:40px;"
+                                                       href="${request.contextPath}${itemc.url}">${itemc.menuname}</a>
                                                 </dd>
                                               </#if>
                                           </#if>

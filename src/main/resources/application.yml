@@ -1,7 +1,7 @@
 server:
   port: 80
   servlet:
-    context-path: /
+    context-path: /sp
 spring:
   datasource:
     name: myDataSource
@@ -15,6 +15,7 @@ spring:
   freemarker:
     cache: false
     suffix:  .ftl
+    request-context-attribute: request
 #不配置会启动会出现，No active profile set, falling back to default profiles: default
   profiles:
     active: dev

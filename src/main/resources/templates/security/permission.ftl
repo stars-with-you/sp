@@ -68,7 +68,7 @@
         //第一个实例
         tableIns = table.render({
             elem: '#test'
-            , url: '/perm/getlist',
+            , url: '${request.contextPath}/perm/getlist',
             request: {
                 pageName: 'pn' //页码的参数名称，默认：page
                 , limitName: 'ps' //每页数据量的参数名，默认：limit
@@ -121,7 +121,7 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     $.ajax({
-                        url: "/perm/delbypid",
+                        url: "${request.contextPath}/perm/delbypid",
                         type: "post",
                         data: {"pid": trdata.pid},
                         dataType: "text",
@@ -133,7 +133,7 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                $.post("/perm/getsingle", {"pid": trdata.pid}, function (data, status) {
+                $.post("${request.contextPath}/perm/getsingle", {"pid": trdata.pid}, function (data, status) {
                     if (status == "success") {
 
                         if (data != "") {
@@ -201,7 +201,11 @@
             layer.msg('请选择权限类别', {icon: 2});
             return;
         }
-        $.post("/perm/add",{"pname":$("#perm_txtpname").val(),"purl":$("#perm_txtpurl").val(),"cata":$("#perm_cata").val()},function(data,status){
+        $.post("${request.contextPath}/perm/add", {
+            "pname": $("#perm_txtpname").val(),
+            "purl": $("#perm_txtpurl").val(),
+            "cata": $("#perm_cata").val()
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('信息添加成功', {icon: 1});
@@ -230,7 +234,12 @@
             layer.msg('请选择权限类别', {icon: 2});
             return;
         }
-        $.post("/perm/updatebypid",{"pid":$("#perm_hidpid").val(),"pname":$("#perm_txtpname").val(),"purl":$("#perm_txtpurl").val(),"cata":$("#perm_cata").val()},function(data,status){
+        $.post("${request.contextPath}/perm/updatebypid", {
+            "pid": $("#perm_hidpid").val(),
+            "pname": $("#perm_txtpname").val(),
+            "purl": $("#perm_txtpurl").val(),
+            "cata": $("#perm_cata").val()
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('信息修改成功', {icon: 1});

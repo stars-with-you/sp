@@ -14,7 +14,7 @@
       pasteImage: true,
       defaultImage: 'assets/images/image.png',
       upload: location.search === '?upload' ? {
-        url: '/upload'
+          url: '${request.contextPath}/upload'
       } : false
     });
     $preview = $('#preview');

@@ -72,7 +72,7 @@
         //第一个实例
         tableIns = table.render({
             elem: '#test'
-            , url: '/role/getlist',
+            , url: '${request.contextPath}/role/getlist',
             request: {
                 pageName: 'pn' //页码的参数名称，默认：page
                 , limitName: 'ps' //每页数据量的参数名，默认：limit
@@ -112,7 +112,7 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     $.ajax({
-                        url: "/role/delbyrcode",
+                        url: "${request.contextPath}/role/delbyrcode",
                         type: "post",
                         data: {"rcode": trdata.rcode},
                         dataType: "text",
@@ -124,7 +124,7 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                $.post("/role/getsingle", {"rcode": trdata.rcode}, function (data, status) {
+                $.post("${request.contextPath}/role/getsingle", {"rcode": trdata.rcode}, function (data, status) {
                     if (status == "success") {
                         if (data != "") {
                             var json = $.parseJSON(data);
@@ -194,7 +194,7 @@
             layer.msg('请填写角色名称', {icon: 2});
             return;
         }
-        $.post("/role/add",{"rname":$("#role_txtrname").val()},function(data,status){
+        $.post("${request.contextPath}/role/add", {"rname": $("#role_txtrname").val()}, function (data, status) {
 
             if (status=="success") {
                 if (data=="1") {
@@ -217,7 +217,10 @@
             layer.msg('请填写角色名称', {icon: 2});
             return;
         }
-        $.post("/role/updatebyrcode",{"rname":$("#role_txtrname").val(),"rcode":$("#role_txtcode").val()},function(data,status){
+        $.post("${request.contextPath}/role/updatebyrcode", {
+            "rname": $("#role_txtrname").val(),
+            "rcode": $("#role_txtcode").val()
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('信息修改成功', {icon: 1});
@@ -237,7 +240,7 @@
     {
         $("#role_hidrcode").val(rcode);
         $("#role_tbperm input[type=checkbox]").removeAttr("checked");
-        $.post("/perm/getlistbyrcode",{"rcode":rcode},function(data,status){
+        $.post("${request.contextPath}/perm/getlistbyrcode", {"rcode": rcode}, function (data, status) {
             if (status=="success") {
                 if (data!="") {
                     var json=$.parseJSON(data);
@@ -258,7 +261,10 @@
         $("#role_tbperm input[type=checkbox]:checked").each(function(){
             pid+=$(this).attr("id")+";";
         });
-        $.post("/role/addroleperm",{"rcode":$("#role_hidrcode").val(),"pidstr":pid},function(data,status){
+        $.post("${request.contextPath}/role/addroleperm", {
+            "rcode": $("#role_hidrcode").val(),
+            "pidstr": pid
+        }, function (data, status) {
             if (status=="success") {
                 if (data=="1") {
                     layer.msg('权限更新成功',{icon:1});
@@ -276,7 +282,7 @@
     }
     $(function () {
         //绑定添加权限按钮事件
-        $.post("/perm/getlistall",function(data,status){
+        $.post("${request.contextPath}/perm/getlistall", function (data, status) {
             if (status=="success") {
                 if (data!="") {
                     var json=$.parseJSON(data);

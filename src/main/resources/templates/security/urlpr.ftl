@@ -66,7 +66,7 @@
         tableIns = table.render(
             {
             elem: '#test',
-            url: '/urlpr/data',
+                url: '${request.contextPath}/urlpr/data',
             request: {
                 pageName: 'currentPage' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
@@ -114,7 +114,7 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     $.ajax({
-                        url: "/urlpr/delbysguid",
+                        url: "${request.contextPath}/urlpr/delbysguid",
                         type: "post",
                         data: {"sguid": trdata.sguid},
                         dataType: "text",
@@ -129,7 +129,7 @@
                     });
                 });
             } else if (layEvent === 'edit') {
-                $.post("/urlpr/getsingle", {"sguid": trdata.sguid}, function (data, status) {
+                $.post("${request.contextPath}/urlpr/getsingle", {"sguid": trdata.sguid}, function (data, status) {
                     if (status == "success") {
                         if (data != "") {
                             var json = $.parseJSON(data);
@@ -198,7 +198,7 @@
             "ssx": $("#urlpr_txtssx").val(),
             "sms": $("#urlpr_txtsms").val()
         };
-        $.post("/urlpr/add", opts, function (data, status) {
+        $.post("${request.contextPath}/urlpr/add", opts, function (data, status) {
             if (status == "success") {
                 if (data == "1") {
                     layer.msg('信息添加成功', {icon: 1});
@@ -230,7 +230,7 @@
             "ssx": $("#urlpr_txtssx").val(),
             "sms": $("#urlpr_txtsms").val()
         };
-        $.post("/urlpr/updatebysguid", opts, function (data, status) {
+        $.post("${request.contextPath}/urlpr/updatebysguid", opts, function (data, status) {
             if (status == "success") {
                 if (data == "1") {
                     layer.msg('信息修改成功', {icon: 1});

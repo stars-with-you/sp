@@ -8,7 +8,7 @@
       toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent'],
       defaultImage: 'assets/images/image.png',
       upload: location.search === '?upload' ? {
-        url: '/upload'
+          url: '${request.contextPath}/upload'
       } : false
     });
     return editor = new Simditor({
@@ -18,7 +18,7 @@
       toolbar: ['title', 'bold', 'italic', 'underline', 'strikethrough', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent'],
       defaultImage: 'assets/images/image.png',
       upload: location.search === '?upload' ? {
-        url: '/upload'
+          url: '${request.contextPath}/upload'
       } : false
     });
   });
